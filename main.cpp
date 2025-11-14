@@ -4,68 +4,10 @@
 #include <optional>
 #include <vector>
 
-enum class TokenType{
-    _return,
-    _int_lit,
-    _semi
-};
-
-struct Token{
-    TokenType type;
-    std::optional<std::string> value{};
-};
+#include "tokenization.hpp"
 
 std::vector<Token> tokenize(const std::string& str){
-    std::vector<Token> tokens;
-    std::string buffer;
-    for(int i = 0; i < str.length(); i++){
-        char c = str.at(i);
-        if(std::isalpha(c)){
-            buffer.push_back(c);
-            i++;
-            while(std::isalnum(str.at(i))){
-                buffer.push_back(str.at(i));
-                i++;
-            }
-            i--;
-            if(buffer == "return"){
-                tokens.push_back({.type = TokenType::_return});
-                buffer.clear();
-                continue;
-            }else{
-                std::cerr << "FOUT" << std::endl;
-                exit(EXIT_FAILURE);
-
-            }
-        }
-        else if (std::isdigit(c))
-            {
-                buffer.push_back(c);
-                i++;
-                while (std::isdigit(str.at(i)))
-                {
-                    buffer.push_back(str.at(i));
-                    i++;
-                }
-                i--;
-                tokens.push_back({.type = TokenType::_int_lit, .value = buffer});
-                buffer.clear();
-            }
-            else if (c == ';')
-            {
-                tokens.push_back({.type = TokenType::_semi});
-            }
-            
-            
-            else if(std::isspace(c)){
-                continue;
-            }
-            else{
-                std::cerr << "FOUT" << std::endl;
-                exit(EXIT_FAILURE);
-            }
-    }
-    return tokens;
+    
 };
 
 std::string TokensToAsm(const std::vector<Token>& tokens){
@@ -74,7 +16,7 @@ std::string TokensToAsm(const std::vector<Token>& tokens){
     for (int i = 0; i < tokens.size(); i++)
     {
         const Token& token = tokens.at(i);
-        if(token.type == TokenType::_return){
+        if(token.type == TokenType::_exit){
             if(i + 1 < tokens.size() && tokens.at(i + 1).type == TokenType::_int_lit){
                 if(i + 2 < tokens.size() && tokens.at(i + 2).type == TokenType::_semi){
                 output << "    mov rax, 60\n";
