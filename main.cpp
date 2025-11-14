@@ -12,13 +12,54 @@ enum class TokenType{
 
 struct Token{
     TokenType type;
-    std::optional<std::string> value;
+    std::optional<std::string> value{};
 };
 
 std::vector<Token> tokenize(const std::string& str){
-    for(int c = 0; c < str.length(); c++){
+    std::vector<Token> tokens;
+    std::string buffer;
+    for(int i = 0; i < str.length(); i++){
+        char c = str.at(i);
+        if(std::isalpha(c)){
+            buffer.push_back(c);
+            i++;
+            if(std::isalnum(str.at(i))){
+                buffer.push_back(str.at(i));
+                i++;
+            }
+            i--;
+            if(buffer == "return"){
+                tokens.push_back({.type = TokenType::_return});
+                buffer.clear();
+                continue;
+            }else{
+                std::cerr << "FOUT" << std::endl;
+                exit(EXIT_FAILURE);
 
-
+            }
+        }
+        else if (std::isdigit(c))
+            {
+                buffer.push_back(c);
+                i++;
+                while (std::isdigit(str.at(c)))
+                {
+                    buffer.push_back(str.at(c));
+                    i++;
+                }
+                i--;
+                tokens.push_back({.type = TokenType::_int_lit, .value = buffer});
+                buffer.clear();
+            }
+            else if (c == ';')
+            {
+                tokens.push_back({.type = TokenType::_semi});
+            }
+            
+            
+            else if(std::isspace(c)){
+                continue;
+            }
     }
 };
 
